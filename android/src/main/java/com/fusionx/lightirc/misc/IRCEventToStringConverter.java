@@ -228,7 +228,11 @@ public class IRCEventToStringConverter {
 
     private FormattedString formatMessage(String message,
             List<FormatSpanInfo> formats, int[] colorPalette) {
-        FormattedString formattedMessage = new FormattedString(message);
+        // Work around buggy linkification when a message contains a URL surrounded by parentheses.
+        // The link from a message such as "(http://google.com/)" erroneously contains the closing
+        // parenthesis, and the easiest workaround is to ensure that the string does not end with ")".
+        FormattedString formattedMessage =
+                new FormattedString(message.endsWith(")") ? (message + " ") : message);
 
         int formatCount = formats == null ? 0 : formats.size();
         for (int i = 0; i < formatCount; i++) {
