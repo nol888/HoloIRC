@@ -78,29 +78,6 @@ abstract class IRCFragment<T extends Event> extends BaseIRCFragment
         }
     };
 
-    private class BottomPinningLayoutEventListener
-            extends RecyclerView.OnScrollListener
-            implements View.OnLayoutChangeListener {
-        private boolean mIsScrolledToBottom = true;
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-
-            mIsScrolledToBottom = mLayoutManager.findLastCompletelyVisibleItemPosition()
-                    == mMessageAdapter.getItemCount() - 1;
-        }
-
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-                                   int oldTop, int oldRight, int oldBottom) {
-            if ((bottom < oldBottom) && mIsScrolledToBottom) {
-                mRecyclerView.post(
-                        () -> mRecyclerView.scrollToPosition(mMessageAdapter.getItemCount() - 1));
-            }
-        }
-    }
-
     private BottomPinningLayoutEventListener mBottomPinningLayoutEventListener =
             new BottomPinningLayoutEventListener();
 
@@ -132,6 +109,7 @@ abstract class IRCFragment<T extends Event> extends BaseIRCFragment
         getBus().register(mEventListener);
         mMessageAdapter = getNewAdapter();
         mRecyclerView.setAdapter(mMessageAdapter);
+        mBottomPinningLayoutEventListener.registerAdapterDataObserver();
 
         onResetBuffer(() -> {
         });
@@ -208,5 +186,54 @@ abstract class IRCFragment<T extends Event> extends BaseIRCFragment
     public interface Callback {
 
         public EventCache getEventCache(final Conversation conversation);
+    }
+
+    private class BottomPinningLayoutEventListener
+            extends RecyclerView.OnScrollListener
+            implements View.OnLayoutChangeListener {
+        private boolean mIsScrolledToBottom = true;
+
+        private RecyclerView.AdapterDataObserver mAdapterWatcher =
+                new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                if (mIsScrolledToBottom) {
+                    mRecyclerView.post(
+                            () -> mRecyclerView.scrollToPosition(mMessageAdapter.getItemCount() - 1));
+                }
+            }
+
+            @Override
+            public void onChanged() {
+                if (mMessageAdapter.getItemCount() > 0) {
+                    mRecyclerView.post(
+                            () -> mRecyclerView.scrollToPosition(mMessageAdapter.getItemCount() - 1));
+                }
+                mIsScrolledToBottom = true;
+            }
+        };
+
+        private void registerAdapterDataObserver() {
+            mMessageAdapter.registerAdapterDataObserver(mAdapterWatcher);
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                mIsScrolledToBottom = mLayoutManager.findLastCompletelyVisibleItemPosition()
+                        == mMessageAdapter.getItemCount() - 1;
+            }
+        }
+
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
+                                   int oldTop, int oldRight, int oldBottom) {
+            if ((bottom < oldBottom) && mIsScrolledToBottom) {
+                mRecyclerView.post(
+                        () -> mRecyclerView.scrollToPosition(mMessageAdapter.getItemCount() - 1));
+            }
+        }
     }
 }
