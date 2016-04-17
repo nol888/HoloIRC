@@ -28,10 +28,10 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/relative_layout_text"
         android:dividerHeight="0dp"
-        android:paddingBottom="8dip"
-        android:paddingLeft="16dip"
-        android:paddingRight="16dip"
-        android:paddingTop="8dip" />
+        android:paddingBottom="4dip"
+        android:paddingLeft="4dip"
+        android:paddingRight="4dip"
+        android:paddingTop="4dip" />
 
     <RelativeLayout
         android:id="@+id/relative_layout_text"
