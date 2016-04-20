@@ -83,6 +83,7 @@ public class IRCEventToStringConverter {
     private static IRCEventToStringConverter sConverter;
 
     private final EventConverter mEventConverter = new EventConverter();
+    private final RobotoStyleSpan.Factory mRobotoStyleSpanFactory;
 
     private final Map<Class, Method> mClassMethodMap = new HashMap<>();
     private final int[] mDarkColors;
@@ -96,6 +97,8 @@ public class IRCEventToStringConverter {
         buildReflectionCache();
         mDarkColors = mContext.getResources().getIntArray(R.array.irc_colors_dark);
         mLightColors = mContext.getResources().getIntArray(R.array.irc_colors_light);
+
+        mRobotoStyleSpanFactory = new RobotoStyleSpan.Factory(context);
     }
 
     public static IRCEventToStringConverter getConverter(final Context context) {
@@ -171,7 +174,7 @@ public class IRCEventToStringConverter {
             return setupEvent(message);
         }
         final SpannableStringBuilder builder = getSpannableStringBuilderForText(message);
-        builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(),
+        builder.setSpan(mRobotoStyleSpanFactory.buildBold(), 0, builder.length(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return setupEvent(builder);
     }
@@ -240,10 +243,10 @@ public class IRCEventToStringConverter {
             final int start = span.start, end = span.end;
             switch (span.format) {
                 case BOLD:
-                    formattedMessage.addSpan(new StyleSpan(Typeface.BOLD), start, end);
+                    formattedMessage.addSpan(mRobotoStyleSpanFactory.buildBold(), start, end);
                     break;
                 case ITALIC:
-                    formattedMessage.addSpan(new StyleSpan(Typeface.ITALIC), start, end);
+                    formattedMessage.addSpan(mRobotoStyleSpanFactory.buildItalic(), start, end);
                     break;
                 case UNDERLINED:
                     formattedMessage.addSpan(new UnderlineSpan(), start, end);
