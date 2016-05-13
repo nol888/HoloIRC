@@ -22,6 +22,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
@@ -47,6 +49,7 @@ import co.fusionx.relay.base.ServerConfiguration;
 import co.fusionx.relay.internal.base.RelayConnectionManager;
 import co.fusionx.relay.parser.UserInputParser;
 
+import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
 import static com.fusionx.lightirc.util.MiscUtils.getBus;
 import static com.fusionx.lightirc.util.NotificationUtils.notifyOutOfApp;
 
@@ -100,6 +103,24 @@ public class IRCService extends Service {
                 if (server.getStatus() == ConnectionStatus.DISCONNECTED) {
                     mConnectionManager.requestReconnection(server);
                 }
+            }
+        }
+    };
+
+    private final BroadcastReceiver mNetworkStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null || intent.getExtras() == null) {
+                return;
+            }
+
+            ConnectivityManager manager =
+                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo ni = manager.getActiveNetworkInfo();
+
+            if (ni != null && (ni.getState() == NetworkInfo.State.CONNECTED
+                    || ni.getState() == NetworkInfo.State.DISCONNECTED)) {
+                mConnectionManager.handleConnectivityChange();
             }
         }
     };
@@ -173,6 +194,7 @@ public class IRCService extends Service {
         getBus().register(mEventHelper, SERVICE_PRIORITY);
         registerReceiver(mDisconnectAllReceiver, new IntentFilter(DISCONNECT_ALL_INTENT));
         registerReceiver(mReconnectAllReceiver, new IntentFilter(RECONNECT_ALL_INTENT));
+        registerReceiver(mNetworkStateReceiver, new IntentFilter(CONNECTIVITY_ACTION));
     }
 
     @Override
@@ -216,6 +238,7 @@ public class IRCService extends Service {
         super.onDestroy();
 
         getBus().unregister(mEventHelper);
+        unregisterReceiver(mNetworkStateReceiver);
         unregisterReceiver(mDisconnectAllReceiver);
         unregisterReceiver(mReconnectAllReceiver);
         unregisterReceiver(mExternalStorageReceiver);
