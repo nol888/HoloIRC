@@ -1,24 +1,12 @@
 package com.fusionx.lightirc.misc;
 
-import com.fusionx.lightirc.R;
-import com.fusionx.lightirc.model.EventDecorator;
-import com.fusionx.lightirc.util.CrashUtils;
-
 import android.content.Context;
-import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import co.fusionx.relay.base.ChannelUser;
 import co.fusionx.relay.base.FormatSpanInfo;
 import co.fusionx.relay.base.Nick;
@@ -30,50 +18,17 @@ import co.fusionx.relay.dcc.event.chat.DCCChatWorldMessageEvent;
 import co.fusionx.relay.dcc.event.file.DCCFileGetStartedEvent;
 import co.fusionx.relay.dcc.pending.DCCPendingChatConnection;
 import co.fusionx.relay.event.Event;
-import co.fusionx.relay.event.channel.ChannelActionEvent;
-import co.fusionx.relay.event.channel.ChannelConnectEvent;
-import co.fusionx.relay.event.channel.ChannelDisconnectEvent;
-import co.fusionx.relay.event.channel.ChannelInitialTopicEvent;
-import co.fusionx.relay.event.channel.ChannelMessageEvent;
-import co.fusionx.relay.event.channel.ChannelModeEvent;
-import co.fusionx.relay.event.channel.ChannelNickChangeEvent;
-import co.fusionx.relay.event.channel.ChannelNoticeEvent;
-import co.fusionx.relay.event.channel.ChannelStopEvent;
-import co.fusionx.relay.event.channel.ChannelTopicEvent;
-import co.fusionx.relay.event.channel.ChannelUserLevelChangeEvent;
-import co.fusionx.relay.event.channel.ChannelWorldActionEvent;
-import co.fusionx.relay.event.channel.ChannelWorldJoinEvent;
-import co.fusionx.relay.event.channel.ChannelWorldKickEvent;
-import co.fusionx.relay.event.channel.ChannelWorldLevelChangeEvent;
-import co.fusionx.relay.event.channel.ChannelWorldMessageEvent;
-import co.fusionx.relay.event.channel.ChannelWorldNickChangeEvent;
-import co.fusionx.relay.event.channel.ChannelWorldPartEvent;
-import co.fusionx.relay.event.channel.ChannelWorldQuitEvent;
-import co.fusionx.relay.event.channel.PartEvent;
-import co.fusionx.relay.event.query.QueryActionSelfEvent;
-import co.fusionx.relay.event.query.QueryActionWorldEvent;
-import co.fusionx.relay.event.query.QueryConnectEvent;
-import co.fusionx.relay.event.query.QueryDisconnectEvent;
-import co.fusionx.relay.event.query.QueryMessageSelfEvent;
-import co.fusionx.relay.event.query.QueryMessageWorldEvent;
-import co.fusionx.relay.event.query.QueryOpenedEvent;
-import co.fusionx.relay.event.query.QueryStopEvent;
-import co.fusionx.relay.event.server.ConnectEvent;
-import co.fusionx.relay.event.server.ConnectingEvent;
-import co.fusionx.relay.event.server.RegisteringEvent;
-import co.fusionx.relay.event.server.DCCChatRequestEvent;
-import co.fusionx.relay.event.server.DisconnectEvent;
-import co.fusionx.relay.event.server.ErrorEvent;
-import co.fusionx.relay.event.server.GenericServerEvent;
-import co.fusionx.relay.event.server.InviteEvent;
-import co.fusionx.relay.event.server.KickEvent;
-import co.fusionx.relay.event.server.MotdEvent;
-import co.fusionx.relay.event.server.NoticeEvent;
-import co.fusionx.relay.event.server.ReconnectEvent;
-import co.fusionx.relay.event.server.ServerNickChangeEvent;
-import co.fusionx.relay.event.server.StopEvent;
-import co.fusionx.relay.event.server.WallopsEvent;
-import co.fusionx.relay.event.server.WhoisEvent;
+import co.fusionx.relay.event.channel.*;
+import co.fusionx.relay.event.query.*;
+import co.fusionx.relay.event.server.*;
+import com.fusionx.lightirc.R;
+import com.fusionx.lightirc.model.EventDecorator;
+import com.fusionx.lightirc.util.CrashUtils;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /*
  * TODO - cleanup this entire class - it's a total mess
@@ -647,6 +602,12 @@ public class IRCEventToStringConverter {
             final String formattedResponse = String.format(response, event.channelName,
                     event.invitingUser);
             return setupEvent(formattedResponse, true);
+        }
+
+        public EventDecorator getChannelModesEvent(final ChannelModesEvent event, int[] colorPalette) {
+            final String response = mContext.getString(R.string.parser_cmodes);
+            final String formattedResponse = String.format(response, event.modeString);
+            return setupEvent(formattedResponse);
         }
 
         // DCC chat events start
