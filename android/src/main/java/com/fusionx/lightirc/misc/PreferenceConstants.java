@@ -78,6 +78,8 @@ public class PreferenceConstants {
 
     public final static String PREF_QUIT_REASON = "pref_quit_reason";
 
+    public final static String PREF_HIGHLIGHT_WORDS = "pref_highlight_words";
+
     public final static String PREF_HIDE_MESSAGES = "pref_hide_messages";
 
     public final static String PREF_PART_REASON = "pref_part_reason";

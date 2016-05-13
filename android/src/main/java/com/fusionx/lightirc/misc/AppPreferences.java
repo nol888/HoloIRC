@@ -48,6 +48,8 @@ public class AppPreferences implements RelayConfiguration, LoggingPreferences {
 
     private String mQuitReason = "";
 
+    private String[] mHighlightWords = new String[0];
+
     // Notification settings
     private boolean mInAppNotification;
 
@@ -160,6 +162,11 @@ public class AppPreferences implements RelayConfiguration, LoggingPreferences {
         return mQuitReason;
     }
 
+    @Override
+    public String[] getHighlightWords() {
+        return mHighlightWords;
+    }
+
     // We always want to display the messages that the app user sends
     @Override
     public boolean isSelfEventHidden() {
@@ -218,6 +225,12 @@ public class AppPreferences implements RelayConfiguration, LoggingPreferences {
 
         mPartReason = preferences.getString(PreferenceConstants.PREF_PART_REASON, "");
         mQuitReason = preferences.getString(PreferenceConstants.PREF_QUIT_REASON, "");
+
+        mHighlightWords = preferences
+                .getString(PreferenceConstants.PREF_HIGHLIGHT_WORDS, "").split(",\\s*");
+        if (mHighlightWords.length == 1 && mHighlightWords[0].trim().length() == 0) {
+            mHighlightWords = new String[0];
+        }
 
         // Notification settings
         mInAppNotificationSettings = preferences.getStringSet(PreferenceConstants

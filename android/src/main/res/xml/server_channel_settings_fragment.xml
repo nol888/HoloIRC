@@ -28,6 +28,11 @@
                 android:defaultValue=""
                 android:title="Reason for quitting server"
                 android:summary=""/>
+        <EditTextPreference
+                android:key="pref_highlight_words"
+                android:defaultValue=""
+                android:title="Additional Highlight Words"
+                android:summary="Comma separated words to highlight on"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Channel Settings">
