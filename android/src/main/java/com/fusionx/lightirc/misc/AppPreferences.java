@@ -1,21 +1,21 @@
 package com.fusionx.lightirc.misc;
 
-import com.fusionx.lightirc.event.OnPreferencesChangedEvent;
-import com.fusionx.lightirc.util.CrashUtils;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
+import android.os.Vibrator;
 import co.fusionx.relay.base.Server;
 import co.fusionx.relay.interfaces.RelayConfiguration;
 import co.fusionx.relay.logging.LoggingPreferences;
+import com.fusionx.lightirc.R;
+import com.fusionx.lightirc.event.OnPreferencesChangedEvent;
+import com.fusionx.lightirc.util.CrashUtils;
+import com.google.common.collect.Sets;
+
+import java.io.File;
+import java.util.Set;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.fusionx.lightirc.util.MiscUtils.getBus;
@@ -84,6 +84,19 @@ public class AppPreferences implements RelayConfiguration, LoggingPreferences {
         final SharedPreferences preferences = getDefaultSharedPreferences(context);
         preferences.registerOnSharedPreferenceChangeListener(sPrefsChangeListener);
         setPreferences(preferences);
+
+        final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator.hasVibrator()) {
+            mInAppNotificationSettings = Sets.newHashSet(
+                    context.getResources().getStringArray(R.array.notification_in_values_default));
+            mOutOfAppNotificationSettings = Sets.newHashSet(
+                    context.getResources().getStringArray(R.array.notification_out_values_default));
+        } else {
+            mInAppNotificationSettings = Sets.newHashSet(
+                    context.getResources().getStringArray(R.array.notification_in_values_no_vibrator));
+            mOutOfAppNotificationSettings = Sets.newHashSet(
+                    context.getResources().getStringArray(R.array.notification_out_values_no_vibrator));
+        }
     }
 
     public static void setupAppPreferences(final Context context) {
@@ -211,7 +224,7 @@ public class AppPreferences implements RelayConfiguration, LoggingPreferences {
                 .FRAGMENT_SETTINGS_THEME, "1"));
         mTheme = themeInt != 0 ? Theme.LIGHT : Theme.DARK;
         mHighlightLine = preferences
-                .getBoolean(PreferenceConstants.PREF_HIGHLIGHT_WHOLE_LINE, true);
+                .getBoolean(PreferenceConstants.PREF_HIGHLIGHT_WHOLE_LINE, false);
 
         mTimestamp = preferences.getBoolean(PreferenceConstants.PREF_TIMESTAMPS, false);
         mMotdAllowed = preferences.getBoolean(PreferenceConstants.PREF_MOTD, true);
@@ -234,11 +247,11 @@ public class AppPreferences implements RelayConfiguration, LoggingPreferences {
 
         // Notification settings
         mInAppNotificationSettings = preferences.getStringSet(PreferenceConstants
-                .PREF_IN_APP_NOTIFICATION_SETTINGS, new HashSet<>());
+                .PREF_IN_APP_NOTIFICATION_SETTINGS, mInAppNotificationSettings);
         mInAppNotification = preferences.getBoolean(PreferenceConstants
                 .PREF_IN_APP_NOTIFICATION, true);
         mOutOfAppNotificationSettings = preferences.getStringSet(PreferenceConstants
-                .PREF_OUT_OF_APP_NOTIFICATION_SETTINGS, new HashSet<>());
+                .PREF_OUT_OF_APP_NOTIFICATION_SETTINGS, mOutOfAppNotificationSettings);
         mOutOfAppNotification = preferences.getBoolean(PreferenceConstants
                 .PREF_OUT_OF_APP_NOTIFICATION, true);
 

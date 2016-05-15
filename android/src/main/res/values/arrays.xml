@@ -115,20 +115,20 @@
     <array name="irc_colors_dark">
         <item>@android:color/white</item>
         <item>@android:color/black</item>
-        <item>#9fa8da</item> <!-- indigo 200 -->
-        <item>#a5d6a7</item> <!-- green 200 -->
-        <item>#ef9a9a</item> <!-- red 200 -->
-        <item>#bcaaa4</item> <!-- brown 200 -->
-        <item>#ce93d8</item> <!-- purple 200 -->
-        <item>#ffcc80</item> <!-- orange 200 -->
-        <item>#fff59d</item> <!-- yellow 200 -->
-        <item>#e6ee9c</item> <!-- lime 200 -->
-        <item>#80cbc4</item> <!-- teal 200 -->
-        <item>#80deea</item> <!-- cyan 200 -->
-        <item>#81d4fa</item> <!-- light blue 200 -->
-        <item>#f48fb1</item> <!-- pink 200 -->
-        <item>#bdbdbd</item> <!-- grey 400 as dark grey -->
-        <item>#eeeeee</item> <!-- grey 200 as light grey -->
+        <item>#5c6bc0</item> <!-- indigo 400 -->
+        <item>#66bb6a</item> <!-- green 400 -->
+        <item>#ef5350</item> <!-- red 400 -->
+        <item>#8d6e63</item> <!-- brown 400 -->
+        <item>#ab47bc</item> <!-- purple 400 -->
+        <item>#ff9800</item> <!-- orange 500 -->
+        <item>#ffeb3b</item> <!-- yellow 500 -->
+        <item>#9ccc65</item> <!-- light green 400 -->
+        <item>#26a69a</item> <!-- teal 400 -->
+        <item>#26c6da</item> <!-- cyan 400 -->
+        <item>#29b6f6</item> <!-- light blue 400 -->
+        <item>#f06292</item> <!-- pink 300 -->
+        <item>#9e9e9e</item> <!-- grey 500 as dark grey -->
+        <item>#e0e0e0</item> <!-- grey 300 as light grey -->
     </array>
 
     <array name="irc_colors_light">
