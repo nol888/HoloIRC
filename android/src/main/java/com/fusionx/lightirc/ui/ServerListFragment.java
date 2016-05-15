@@ -289,6 +289,8 @@ public class ServerListFragment extends Fragment implements ExpandableListView.O
         if (item.getServer() == null) {
             item.setServer(mService.requestConnectionToServer(item.getBuilder()));
             mEventHandlers.put(item.getServer(), new ServerEventHandler(item, groupPosition));
+        } else if (item.getServer().getStatus() == ConnectionStatus.DISCONNECTED) {
+            mService.requestReconnectionToServer(item.getServer());
         }
         mCallback.onServerClicked(item.getServer());
 
