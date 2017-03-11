@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
@@ -50,11 +50,6 @@ android {
             versionName = android.defaultConfig.versionName
             ext.enableCrashlytics = false
         }
-        internal {
-            applicationId = android.defaultConfig.applicationId
-            versionName = android.defaultConfig.versionName
-            ext.enableCrashlytics = true
-        }
     }
 
     buildTypes {
@@ -78,10 +73,6 @@ dependencies {
 
     compile 'com.sothree.slidinguppanel:library:2.0.4'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'
-
-    internalCompile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true
-    }
 
     compile 'com.google.code.findbugs:jsr305:3.0.1'
 
