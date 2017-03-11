@@ -108,6 +108,8 @@ public class IRCService extends Service {
     };
 
     private final BroadcastReceiver mNetworkStateReceiver = new BroadcastReceiver() {
+        private int mPrimaryNetworkType = -1;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null || intent.getExtras() == null) {
@@ -118,8 +120,8 @@ public class IRCService extends Service {
                     (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = manager.getActiveNetworkInfo();
 
-            if (ni != null && (ni.getState() == NetworkInfo.State.CONNECTED
-                    || ni.getState() == NetworkInfo.State.DISCONNECTED)) {
+            if (ni != null && ni.getType() != mPrimaryNetworkType) {
+                mPrimaryNetworkType = ni.getType();
                 mConnectionManager.handleConnectivityChange();
             }
         }
